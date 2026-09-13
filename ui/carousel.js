@@ -39,7 +39,7 @@ function buildAddItem(onToggleAdd) {
   return item;
 }
 
-function buildCaption(container, profiles, selected, { onSetPrimary }) {
+function buildCaption(container, profiles, selected) {
   const profile = profiles.find((p) => p.username === selected);
   if (!profile) return;
 
@@ -54,13 +54,7 @@ function buildCaption(container, profiles, selected, { onSetPrimary }) {
   name.title = `Open @${profile.username} on GitHub`;
   name.textContent = profile.label ? `${profile.label} (@${profile.username})` : `@${profile.username}`;
 
-  const star = document.createElement("button");
-  star.className = "gm-star";
-  star.textContent = profile.primary ? "★" : "☆";
-  star.title = profile.primary ? "Primary profile (drives the toolbar badge)" : "Set as primary";
-  star.addEventListener("click", () => onSetPrimary?.(profile.username));
-
-  caption.append(name, star);
+  caption.append(name);
   container.appendChild(caption);
 }
 
@@ -95,7 +89,7 @@ function buildAddForm(container, { onAdd, onToggleAdd }) {
 }
 
 export function renderCarousel(container, state, opts) {
-  const { selected, adding, onSelect, onSetPrimary, onAdd, onToggleAdd } = opts;
+  const { selected, adding, onSelect, onAdd, onToggleAdd } = opts;
   container.innerHTML = "";
   const profiles = state.profiles || [];
   if (profiles.length === 0) return;
@@ -153,7 +147,7 @@ export function renderCarousel(container, state, opts) {
   }
 
   container.appendChild(row);
-  buildCaption(container, profiles, selected, { onSetPrimary });
+  buildCaption(container, profiles, selected);
 
   if (!adding) {
     const activeItem = items.find((el) => el.dataset.username === selected);

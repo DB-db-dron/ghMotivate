@@ -68,7 +68,6 @@ async function render() {
       selectedUsername = u;
       render();
     },
-    onSetPrimary: (u) => chrome.runtime.sendMessage({ type: "set-primary", username: u }),
     onAdd: (username) => {
       adding = false;
       selectedUsername = username.trim().replace(/^@/, "");
