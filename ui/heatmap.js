@@ -49,11 +49,30 @@ function showTooltip(target, text) {
   tip.hidden = false;
   const rect = target.getBoundingClientRect();
   const tipRect = tip.getBoundingClientRect();
-  let left = rect.left + rect.width / 2 - tipRect.width / 2;
+  const cellCenterX = rect.left + rect.width / 2;
+  let left = cellCenterX - tipRect.width / 2;
   left = Math.max(4, Math.min(left, window.innerWidth - tipRect.width - 4));
   let top = rect.top - tipRect.height - 8;
+
+  // The box's left edge may have just been clamped away from centering on
+  // the cell (edge cells near the popup's sides) — without this, the arrow
+  // (CSS ::after, centered on the *box*) stays centered on the box instead
+  // of following the cell, so it visibly points at the wrong place. Keep it
+  // pinned to the cell's actual center, clamped to stay within the box.
+  let arrowLeft = cellCenterX - left;
+  arrowLeft = Math.max(10, Math.min(arrowLeft, tipRect.width - 10));
+  tip.style.setProperty("--gm-arrow-left", `${arrowLeft}px`);
+
+  // A cell in the grid's top row sits right under the month-label row (only
+  // a 2px gap), so "above" never has room — checking the viewport's edge
+  // alone misses this, since the popup itself has plenty of space above the
+  // whole heatmap. Flip below whenever placing it above would creep into
+  // whatever this heatmap's own container sits inside of.
+  const boundary = target.closest(".gm-heatmap-inner")?.getBoundingClientRect();
+  const minTop = Math.max(4, boundary ? boundary.top : 4);
+
   let arrowBelow = false;
-  if (top < 4) {
+  if (top < minTop) {
     top = rect.bottom + 8;
     arrowBelow = true;
   }
