@@ -388,6 +388,13 @@ body {
 
 .gm-carousel-name {
   font-weight: 600;
+  color: var(--fg);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.gm-carousel-name:hover {
+  text-decoration: underline;
 }
 
 .gm-carousel-add-form {
@@ -443,6 +450,16 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.gm-leaderboard-name a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.gm-leaderboard-name a:hover {
+  text-decoration: underline;
 }
 
 .gm-leaderboard-stats {

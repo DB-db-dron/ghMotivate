@@ -101,8 +101,13 @@ export function renderLeaderboard(container, state, { onSelect, onSetPrimary, on
       onSetPrimary?.(profile.username);
     });
 
-    const label = document.createElement("span");
+    const label = document.createElement("a");
+    label.href = `https://github.com/${encodeURIComponent(profile.username)}`;
+    label.target = "_blank";
+    label.rel = "noopener";
+    label.title = `Open @${profile.username} on GitHub`;
     label.textContent = profile.label ? `${profile.label} (@${profile.username})` : `@${profile.username}`;
+    label.addEventListener("click", (e) => e.stopPropagation());
 
     name.append(star, label);
 

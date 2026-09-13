@@ -46,8 +46,12 @@ function buildCaption(container, profiles, selected, { onSetPrimary }) {
   const caption = document.createElement("div");
   caption.className = "gm-carousel-caption";
 
-  const name = document.createElement("span");
+  const name = document.createElement("a");
   name.className = "gm-carousel-name";
+  name.href = `https://github.com/${encodeURIComponent(profile.username)}`;
+  name.target = "_blank";
+  name.rel = "noopener";
+  name.title = `Open @${profile.username} on GitHub`;
   name.textContent = profile.label ? `${profile.label} (@${profile.username})` : `@${profile.username}`;
 
   const star = document.createElement("button");
