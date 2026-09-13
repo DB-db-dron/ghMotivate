@@ -104,9 +104,16 @@ async function render() {
   }
 
   const breakdownSlot = document.getElementById("breakdownSlot");
-  breakdownSlot.innerHTML = "";
   if (isPrimary) {
     renderBreakdown(breakdownSlot, (state.breakdownByUser || {})[selectedUsername]);
+    breakdownSlot.classList.remove("gm-hidden-preserve-space");
+  } else {
+    // Friends never have breakdown data (fetched for the primary profile
+    // only, to limit API calls). Leaving the primary's last-rendered content
+    // in place and just hiding it — instead of clearing it to empty — keeps
+    // this slot's height identical across every profile switch, so the
+    // popup doesn't resize as you move through the carousel.
+    breakdownSlot.classList.add("gm-hidden-preserve-space");
   }
 
   renderHeatmap(document.getElementById("heatmap"), data?.days || {}, { weeks: 16 });

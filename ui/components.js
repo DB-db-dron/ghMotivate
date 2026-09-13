@@ -7,7 +7,17 @@ function formatIsoShort(iso) {
 
 export function renderBreakdown(container, breakdown) {
   container.innerHTML = "";
-  if (!breakdown || breakdown.eventCount === 0) {
+
+  const items = breakdown
+    ? [
+        ["📝", breakdown.commits, "commits"],
+        ["🔀", breakdown.prsOpened, "PRs opened"],
+        ["✅", breakdown.prsMerged, "PRs merged"],
+        ["🔍", breakdown.reviews, "reviews"],
+      ].filter(([, value]) => value)
+    : [];
+
+  if (items.length === 0) {
     const note = document.createElement("div");
     note.className = "gm-breakdown-window";
     note.textContent = "No recent public PR/issue/review activity found.";
@@ -20,14 +30,7 @@ export function renderBreakdown(container, breakdown) {
   if (breakdown.windowStart) {
     chips.title = `Recent public activity, ${formatIsoShort(breakdown.windowStart)} – ${formatIsoShort(breakdown.windowEnd)} (from GitHub's public events API, which only covers roughly the last 300 public events).`;
   }
-  const items = [
-    ["📝", breakdown.commits, "commits"],
-    ["🔀", breakdown.prsOpened, "PRs opened"],
-    ["✅", breakdown.prsMerged, "PRs merged"],
-    ["🔍", breakdown.reviews, "reviews"],
-  ];
   for (const [icon, value, label] of items) {
-    if (!value) continue;
     const chip = document.createElement("span");
     chip.className = "gm-chip";
     chip.textContent = `${icon} ${value} ${label}`;

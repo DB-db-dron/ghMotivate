@@ -218,6 +218,15 @@ body {
   text-align: center;
 }
 
+#breakdownSlot {
+  transition: opacity 0.15s ease;
+}
+
+.gm-hidden-preserve-space {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .gm-compare-hint {
   color: var(--muted);
   font-size: 11px;
