@@ -14,6 +14,7 @@ const celebration = document.getElementById("celebration");
 
 let selectedUsername = null;
 let adding = false;
+let confirmingRemove = null;
 
 function pickSelected(profiles) {
   if (selectedUsername && profiles.some((p) => p.username === selectedUsername)) return selectedUsername;
@@ -64,8 +65,23 @@ async function render() {
   renderCarousel(document.getElementById("carouselSlot"), state, {
     selected: selectedUsername,
     adding,
+    confirmingRemove,
     onSelect: (u) => {
       selectedUsername = u;
+      render();
+    },
+    onRequestRemove: (u) => {
+      confirmingRemove = u;
+      adding = false;
+      render();
+    },
+    onConfirmRemove: (u) => {
+      confirmingRemove = null;
+      if (u === selectedUsername) selectedUsername = null;
+      chrome.runtime.sendMessage({ type: "remove-profile", username: u });
+    },
+    onCancelRemove: () => {
+      confirmingRemove = null;
       render();
     },
     onAdd: (username) => {
@@ -75,6 +91,7 @@ async function render() {
     },
     onToggleAdd: () => {
       adding = !adding;
+      confirmingRemove = null;
       render();
     },
   });

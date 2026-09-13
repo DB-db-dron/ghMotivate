@@ -421,6 +421,25 @@ body {
   cursor: pointer;
 }
 
+.gm-carousel-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.gm-carousel-confirm-remove {
+  padding: 5px 10px;
+  border: 1px solid #cf222e;
+  background: #cf222e;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 /* Leaderboard */
 
 .gm-leaderboard {

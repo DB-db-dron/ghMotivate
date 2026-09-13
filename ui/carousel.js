@@ -4,10 +4,11 @@
 // avatar (including the peeking neighbors) or the arrows/arrow-keys to
 // switch — scroll-snap keeps whichever is selected centered.
 
-function buildAvatarItem(profile, selected, onSelect) {
+function buildAvatarItem(profile, selected, { onSelect, onRequestRemove }) {
   const item = document.createElement("div");
   item.className = "gm-carousel-item" + (profile.username === selected ? " gm-carousel-item--active" : "");
   item.dataset.username = profile.username;
+  item.title = `@${profile.username} — double-click to stop tracking`;
 
   const wrap = document.createElement("div");
   wrap.className = "gm-avatar-wrap";
@@ -26,7 +27,23 @@ function buildAvatarItem(profile, selected, onSelect) {
   }
 
   item.appendChild(wrap);
-  item.addEventListener("click", () => onSelect?.(profile.username));
+
+  // A double-click still dispatches two "click" events before "dblclick".
+  // Acting on click immediately re-selects (and smooth-scrolls) the item
+  // after just the first of those — for an edge avatar that's the biggest
+  // scroll distance in the strip, so it visibly slides out from under the
+  // cursor before the second click can land, breaking the double-click.
+  // Delaying the single-click action and cancelling it on dblclick avoids
+  // ever starting that scroll mid-gesture.
+  let clickTimer = null;
+  item.addEventListener("click", () => {
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(() => onSelect?.(profile.username), 250);
+  });
+  item.addEventListener("dblclick", () => {
+    clearTimeout(clickTimer);
+    onRequestRemove?.(profile.username);
+  });
   return item;
 }
 
@@ -88,20 +105,55 @@ function buildAddForm(container, { onAdd, onToggleAdd }) {
   setTimeout(() => input.focus(), 0);
 }
 
+function buildConfirmRemove(container, username, { onConfirmRemove, onCancelRemove }) {
+  const wrap = document.createElement("div");
+  wrap.className = "gm-carousel-confirm";
+
+  const text = document.createElement("span");
+  text.textContent = `Stop tracking @${username}?`;
+
+  const confirmBtn = document.createElement("button");
+  confirmBtn.type = "button";
+  confirmBtn.className = "gm-carousel-confirm-remove";
+  confirmBtn.textContent = "Remove";
+  confirmBtn.addEventListener("click", () => onConfirmRemove?.(username));
+
+  const cancel = document.createElement("button");
+  cancel.type = "button";
+  cancel.className = "icon-btn";
+  cancel.textContent = "✕";
+  cancel.addEventListener("click", () => onCancelRemove?.());
+
+  wrap.append(text, confirmBtn, cancel);
+  container.appendChild(wrap);
+}
+
 export function renderCarousel(container, state, opts) {
-  const { selected, adding, onSelect, onAdd, onToggleAdd } = opts;
+  const {
+    selected,
+    adding,
+    confirmingRemove,
+    onSelect,
+    onRequestRemove,
+    onConfirmRemove,
+    onCancelRemove,
+    onAdd,
+    onToggleAdd,
+  } = opts;
   container.innerHTML = "";
   const profiles = state.profiles || [];
   if (profiles.length === 0) return;
+
+  const overlayMode = adding ? "add" : confirmingRemove ? "confirm-remove" : null;
 
   const row = document.createElement("div");
   row.className = "gm-carousel-row";
 
   const carousel = document.createElement("div");
   carousel.className = "gm-carousel";
-  // Hidden (not removed) while the add-form overlay is up, so the row's
-  // height never changes and the popup doesn't resize when it opens/closes.
-  if (adding) carousel.style.visibility = "hidden";
+  // Hidden (not removed) while an overlay is up, so the row's height never
+  // changes and the popup doesn't resize when one opens/closes.
+  if (overlayMode) carousel.style.visibility = "hidden";
 
   const leftArrow = document.createElement("button");
   leftArrow.className = "gm-carousel-arrow";
@@ -117,7 +169,7 @@ export function renderCarousel(container, state, opts) {
   track.className = "gm-carousel-track";
   track.tabIndex = 0;
 
-  const items = profiles.map((p) => buildAvatarItem(p, selected, onSelect));
+  const items = profiles.map((p) => buildAvatarItem(p, selected, { onSelect, onRequestRemove }));
   items.forEach((el) => track.appendChild(el));
   track.appendChild(buildAddItem(onToggleAdd));
 
@@ -136,20 +188,26 @@ export function renderCarousel(container, state, opts) {
   carousel.append(leftArrow, track, rightArrow);
   row.appendChild(carousel);
 
-  if (adding) {
+  if (overlayMode) {
     const overlay = document.createElement("div");
     overlay.className = "gm-carousel-overlay";
     overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) onToggleAdd?.();
+      if (e.target !== overlay) return;
+      if (overlayMode === "add") onToggleAdd?.();
+      else onCancelRemove?.();
     });
-    buildAddForm(overlay, { onAdd, onToggleAdd });
+    if (overlayMode === "add") {
+      buildAddForm(overlay, { onAdd, onToggleAdd });
+    } else {
+      buildConfirmRemove(overlay, confirmingRemove, { onConfirmRemove, onCancelRemove });
+    }
     row.appendChild(overlay);
   }
 
   container.appendChild(row);
   buildCaption(container, profiles, selected);
 
-  if (!adding) {
+  if (!overlayMode) {
     const activeItem = items.find((el) => el.dataset.username === selected);
     activeItem?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
   }
