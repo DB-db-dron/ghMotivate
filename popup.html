@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ghMotivate</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <span class="title">ghMotivate</span>
+      <div>
+        <button id="refreshBtn" class="icon-btn" title="Refresh now" aria-label="Refresh now">⟳</button>
+        <button id="dashboardBtn" class="icon-btn" title="Open full dashboard" aria-label="Open full dashboard">⤢</button>
+      </div>
+    </header>
+
+    <section id="setupView" hidden>
+      <p class="hint">Track a GitHub username. You must be logged into github.com in this browser for your own private contributions to count.</p>
+      <form id="setupForm">
+        <input id="usernameInput" type="text" placeholder="octocat" autocomplete="off" />
+        <button type="submit">Track</button>
+      </form>
+    </section>
+
+    <section id="mainView" hidden>
+      <div id="carouselSlot"></div>
+
+      <div id="celebration" class="gm-recap" hidden></div>
+      <div id="errorBanner" class="error" hidden></div>
+
+      <div class="today-row">
+        <div class="today-count" id="todayCount">0</div>
+        <div class="today-label" id="todayLabel">contributions today</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-value" id="currentStreak">0</div>
+          <div class="stat-label">current streak</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="longestStreak">0</div>
+          <div class="stat-label">longest streak</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="totalYear">0</div>
+          <div class="stat-label">past year</div>
+        </div>
+      </div>
+
+      <div id="recapSlot"></div>
+      <div id="breakdownSlot"></div>
+      <div id="heatmap"></div>
+    </section>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

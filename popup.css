@@ -1,0 +1,65 @@
+body {
+  width: 320px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  font-weight: 600;
+}
+
+section {
+  padding: 12px;
+}
+
+.hint {
+  color: var(--muted);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+#setupForm {
+  display: flex;
+  gap: 6px;
+}
+
+#usernameInput {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+#setupForm button {
+  padding: 6px 10px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.today-row {
+  text-align: center;
+  padding: 6px 0 14px;
+}
+
+.today-count {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.today-label {
+  color: var(--muted);
+  margin-top: 2px;
+}

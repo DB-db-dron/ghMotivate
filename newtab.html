@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ghMotivate</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="newtab.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <span class="title">ghMotivate</span>
+        <span id="fetchedAt" class="fetched-at"></span>
+        <button id="refreshBtn" class="icon-btn" title="Refresh now">⟳</button>
+      </header>
+
+      <section id="setupView" hidden>
+        <p class="hint">Track a GitHub username to get started. You must be logged into github.com in this browser for your own private contributions to count.</p>
+        <form id="setupForm">
+          <input id="usernameInput" type="text" placeholder="octocat" autocomplete="off" />
+          <button type="submit">Track</button>
+        </form>
+      </section>
+
+      <section id="mainView" hidden class="columns">
+        <div class="col-main">
+          <div id="celebration" class="gm-recap" hidden></div>
+          <div id="errorBanner" class="error" hidden></div>
+
+          <div class="profile-heading" id="profileHeading"></div>
+
+          <div class="stats-row">
+            <div class="stat">
+              <div class="stat-value" id="todayCount">0</div>
+              <div class="stat-label">today</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="currentStreak">0</div>
+              <div class="stat-label">current streak</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="longestStreak">0</div>
+              <div class="stat-label">longest streak</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="totalYear">0</div>
+              <div class="stat-label">past year</div>
+            </div>
+          </div>
+
+          <div id="recapSlot"></div>
+          <div id="breakdownSlot"></div>
+          <div id="heatmap"></div>
+        </div>
+
+        <div class="col-side">
+          <h3>Tracked profiles</h3>
+          <form id="addProfileForm">
+            <input id="addProfileInput" type="text" placeholder="add a username to track" autocomplete="off" />
+            <button type="submit">Add</button>
+          </form>
+          <div id="leaderboardSlot"></div>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="newtab.js"></script>
+  </body>
+</html>
