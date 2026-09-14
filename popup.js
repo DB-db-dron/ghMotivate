@@ -162,4 +162,10 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "local") render();
 });
 
+// Paint instantly from whatever's cached, then kick off a live fetch — the
+// storage.onChanged listener above re-renders automatically once it lands.
+// Without this, the popup only ever showed data from the last 10-minute
+// alarm tick, so a contribution made just before opening it wouldn't appear
+// until the next tick (or a manual refresh).
 render();
+chrome.runtime.sendMessage({ type: "refresh" });

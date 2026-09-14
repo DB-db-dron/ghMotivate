@@ -152,4 +152,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "local") render();
 });
 
+// Paint instantly from cache, then trigger a live fetch (storage.onChanged
+// above re-renders once it lands) instead of only ever showing data from
+// the last 10-minute alarm tick.
 render();
+chrome.runtime.sendMessage({ type: "refresh" });
