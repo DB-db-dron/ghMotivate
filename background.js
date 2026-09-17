@@ -1,6 +1,6 @@
 import { parseContributionsHtml, computeStats } from "./lib/contributions.js";
 import { fetchEventBreakdown } from "./lib/events.js";
-import { getState, addProfile, removeProfile, setPrimary, getPrimary, DEFAULT_SETTINGS } from "./lib/storage.js";
+import { getState, addProfile, removeProfile, getPrimary, DEFAULT_SETTINGS } from "./lib/storage.js";
 import { detectMilestones } from "./lib/milestones.js";
 import { maybeGenerateRecaps } from "./lib/recap.js";
 
@@ -132,11 +132,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         break;
       case "remove-profile":
         await removeProfile(message.username);
-        await refreshAll();
-        sendResponse({ ok: true });
-        break;
-      case "set-primary":
-        await setPrimary(message.username);
         await refreshAll();
         sendResponse({ ok: true });
         break;

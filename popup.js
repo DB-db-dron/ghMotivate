@@ -7,7 +7,6 @@ const setupView = document.getElementById("setupView");
 const mainView = document.getElementById("mainView");
 const setupForm = document.getElementById("setupForm");
 const usernameInput = document.getElementById("usernameInput");
-const dashboardBtn = document.getElementById("dashboardBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 const errorBanner = document.getElementById("errorBanner");
 const celebration = document.getElementById("celebration");
@@ -145,10 +144,6 @@ setupForm.addEventListener("submit", async (e) => {
   await chrome.runtime.sendMessage({ type: "add-profile", username });
   setupForm.querySelector("button").disabled = false;
   render();
-});
-
-dashboardBtn.addEventListener("click", () => {
-  chrome.tabs.create({ url: chrome.runtime.getURL("newtab.html") });
 });
 
 refreshBtn.addEventListener("click", async () => {
