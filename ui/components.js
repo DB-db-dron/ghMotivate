@@ -8,22 +8,12 @@ function formatIsoShort(iso) {
 export function renderBreakdown(container, breakdown) {
   container.innerHTML = "";
 
-  const items = breakdown
-    ? [
-        ["📝", breakdown.commits, "commits"],
-        ["🔀", breakdown.prsOpened, "PRs opened"],
-        ["✅", breakdown.prsMerged, "PRs merged"],
-        ["🔍", breakdown.reviews, "reviews"],
-      ].filter(([, value]) => value)
-    : [];
-
-  if (items.length === 0) {
-    const note = document.createElement("div");
-    note.className = "gm-breakdown-window";
-    note.textContent = "No recent public PR/issue/review activity found.";
-    container.appendChild(note);
-    return;
-  }
+  const items = [
+    ["📝", breakdown?.commits ?? 0, "commits"],
+    ["🔀", breakdown?.prsOpened ?? 0, "PRs opened"],
+    ["✅", breakdown?.prsMerged ?? 0, "PRs merged"],
+    ["🔍", breakdown?.reviews ?? 0, "reviews"],
+  ];
 
   const chips = document.createElement("div");
   chips.className = "gm-breakdown";
@@ -43,6 +33,15 @@ export function renderRecapCard(container, recap, { onDismiss } = {}) {
   container.innerHTML = "";
   if (!recap) return;
 
+  const overlay = document.createElement("div");
+  overlay.className = "gm-recap-overlay";
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+      onDismiss?.();
+    }
+  });
+
   const card = document.createElement("div");
   card.className = "gm-recap";
 
@@ -51,7 +50,7 @@ export function renderRecapCard(container, recap, { onDismiss } = {}) {
   dismiss.textContent = "✕";
   dismiss.title = "Dismiss";
   dismiss.addEventListener("click", () => {
-    card.remove();
+    overlay.remove();
     onDismiss?.();
   });
 
@@ -66,7 +65,8 @@ export function renderRecapCard(container, recap, { onDismiss } = {}) {
   body.textContent = `${recap.total} contributions, ${range}.${bestLine}`;
 
   card.append(dismiss, title, body);
-  container.appendChild(card);
+  overlay.appendChild(card);
+  container.appendChild(overlay);
 }
 
 export function renderLeaderboard(container, state, { onSelect, onSetPrimary, onRemove, selected } = {}) {
